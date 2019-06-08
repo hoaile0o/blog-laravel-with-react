@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
+          rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u">
+
+    <script type="text/javascript" src="bundle.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.24.0/babel.js"></script>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <title>React App</title>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="./bundle.js"></script>
+<script>
+    (function (w, i, d, g, e, t, s) {
+        w[d] = w[d] || [];
+        t = i.createElement(g);
+        t.async = 1;
+        t.src = e;
+        s = i.getElementsByTagName(g)[0];
+        s.parentNode.insertBefore(t, s);
+    })(window, document, '_gscq', 'script', '//widgets.getsitecontrol.com/143463/script.js');
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        var navListItems = $('div.setup-panel div a'),
+            allWells = $('.setup-content'),
+            allNextBtn = $('.nextBtn');
+
+        allWells.hide();
+
+        navListItems.click(function (e) {
+            e.preventDefault();
+            var $target = $($(this).attr('href')),
+                $item = $(this);
+
+            if (!$item.hasClass('disabled')) {
+                navListItems.removeClass('btn-primary').addClass('btn-default');
+                $item.addClass('btn-primary');
+                allWells.hide();
+                $target.show();
+                $target.find('input:eq(0)').focus();
+            }
+        });
+
+        allNextBtn.click(function () {
+            var curStep = $(this).closest(".setup-content"),
+                curStepBtn = curStep.attr("id"),
+                nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a"),
+                curInputs = curStep.find("input[type='text'],input[type='url']"),
+                isValid = true;
+
+            $(".form-group").removeClass("has-error");
+            for (var i = 0; i < curInputs.length; i++) {
+                if (!curInputs[i].validity.valid) {
+                    isValid = false;
+                    $(curInputs[i]).closest(".form-group").addClass("has-error");
+                }
+            }
+
+            if (isValid)
+                nextStepWizard.removeAttr('disabled').trigger('click');
+        });
+
+        $('div.setup-panel div a.btn-primary').trigger('click');
+    });
+</script>
+<script>
+
+    (function ($) {
+        "use strict";
+
+        // Options for Message
+        //----------------------------------------------
+        var options = {
+            'btn-loading': '<i class="fa fa-spinner fa-pulse"></i>',
+            'btn-success': '<i class="fa fa-check"></i>',
+            'btn-error': '<i class="fa fa-remove"></i>',
+            'msg-success': 'All Good! Redirecting...',
+            'msg-error': 'Wrong login credentials!',
+            'useAJAX': true,
+        };
+
+        // Login Form
+        //----------------------------------------------
+        // Validation
+        $("#login-form").validate({
+            rules: {
+                lg_username: "required",
+                lg_password: "required",
+            },
+            errorClass: "form-invalid"
+        });
+
+        // Form Submission
+        $("#login-form").submit(function () {
+            remove_loading($(this));
+
+            if (options['useAJAX'] == true) {
+                // Dummy AJAX request (Replace this with your AJAX code)
+                // If you don't want to use AJAX, remove this
+                dummy_submit_form($(this));
+
+                // Cancel the normal submission.
+                // If you don't want to use AJAX, remove this
+                return false;
+            }
+        });
+
+        // Register Form
+        //----------------------------------------------
+        // Validation
+        $("#register-form").validate({
+            rules: {
+                reg_username: "required",
+                reg_password: {
+                    required: true,
+                    minlength: 5
+                },
+                reg_password_confirm: {
+                    required: true,
+                    minlength: 5,
+                    equalTo: "#register-form [name=reg_password]"
+                },
+                reg_email: {
+                    required: true,
+                    email: true
+                },
+                reg_agree: "required",
+            },
+            errorClass: "form-invalid",
+            errorPlacement: function (label, element) {
+                if (element.attr("type") === "checkbox" || element.attr("type") === "radio") {
+                    element.parent().append(label); // this would append the label after all your checkboxes/labels (so the error-label will be the last element in <div class="controls"> )
+                }
+                else {
+                    label.insertAfter(element); // standard behaviour
+                }
+            }
+        });
+
+        // Form Submission
+        $("#register-form").submit(function () {
+            remove_loading($(this));
+
+            if (options['useAJAX'] == true) {
+                // Dummy AJAX request (Replace this with your AJAX code)
+                // If you don't want to use AJAX, remove this
+                dummy_submit_form($(this));
+
+                // Cancel the normal submission.
+                // If you don't want to use AJAX, remove this
+                return false;
+            }
+        });
+
+        // Forgot Password Form
+        //----------------------------------------------
+        // Validation
+        $("#forgot-password-form").validate({
+            rules: {
+                fp_email: "required",
+            },
+            errorClass: "form-invalid"
+        });
+
+        // Form Submission
+        $("#forgot-password-form").submit(function () {
+            remove_loading($(this));
+
+            if (options['useAJAX'] == true) {
+                // Dummy AJAX request (Replace this with your AJAX code)
+                // If you don't want to use AJAX, remove this
+                dummy_submit_form($(this));
+
+                // Cancel the normal submission.
+                // If you don't want to use AJAX, remove this
+                return false;
+            }
+        });
+
+        // Loading
+        //----------------------------------------------
+        function remove_loading($form) {
+            $form.find('[type=submit]').removeClass('error success');
+            $form.find('.login-form-main-message').removeClass('show error success').html('');
+        }
+
+        function form_loading($form) {
+            $form.find('[type=submit]').addClass('clicked').html(options['btn-loading']);
+        }
+
+        function form_success($form) {
+            $form.find('[type=submit]').addClass('success').html(options['btn-success']);
+            $form.find('.login-form-main-message').addClass('show success').html(options['msg-success']);
+        }
+
+        function form_failed($form) {
+            $form.find('[type=submit]').addClass('error').html(options['btn-error']);
+            $form.find('.login-form-main-message').addClass('show error').html(options['msg-error']);
+        }
+
+        // Dummy Submit Form (Remove this)
+        //----------------------------------------------
+        // This is just a dummy form submission. You should use your AJAX function or remove this function if you are not using AJAX.
+        function dummy_submit_form($form) {
+            if ($form.valid()) {
+                form_loading($form);
+
+                setTimeout(function () {
+                    form_success($form);
+                }, 2000);
+            }
+        }
+
+    })(jQuery);
+</script>
+<script>
+
+    jQuery(document).ready(function ($) {
+
+        //Responsive navigation animation
+
+        jQuery("#burgernav").click(function () {
+
+            jQuery(this).toggleClass("is-active");
+            jQuery('body').toggleClass('with--sidebar');
+
+        });
+
+        jQuery('#site-cache').click(function (e) {
+            jQuery("#burgernav").toggleClass("is-active");
+            jQuery('body').removeClass('with--sidebar');
+        });
+
+        //create the slider
+        jQuery('.cd-testimonials-wrapper').flexslider({
+            selector: ".cd-testimonials > li",
+            animation: "slide",
+            controlNav: true,
+            slideshow: false,
+            smoothHeight: true,
+            start: function () {
+                jQuery('.cd-testimonials').children('li').css({
+                    'opacity': 1,
+                    'position': 'relative'
+                });
+            }
+        });
+
+        //Video Controls
+
+        //Handle to controls
+        var playicon = jQuery(".playpause");
+        var video = jQuery(".video");
+        var volume = jQuery(".volume");
+
+        //when video is played
+        video.on('play', function () {
+            // do something
+            playicon.hide();
+        });
+
+        //when video is paused or ends
+        video.on('pause ended', function () {
+            playicon.show();
+        });
+
+        //when video is clicked at any point on the screen like youtube video
+        video.click(function () {
+
+            //Check if video is in the paused state
+            if (video[0].paused == true) {
+
+                video[0].play();
+
+            }
+
+            //if video is in the play state
+            else {
+                video[0].pause();
+            }
+
+        });
+
+        //On volume click
+        volume.click(function () {
+
+            jQuery(this).toggleClass("muted");
+            var bool = video.prop("muted");
+            video.prop("muted", !bool);
+        });
+
+    });
+
+    jQuery(window).load(function () {
+        jQuery(".load-overlay").fadeOut('slow', function () {
+            jQuery(this).remove();
+        });
+        var searchinputhandle = jQuery(".search-input");
+        var searchbutton = jQuery(".searchbtn");
+        jQuery('#lifegrid').NewWaterfall({
+            width: 310,
+            delay: 60,
+            repeatShow: false
+        });
+        searchbutton.click(function (e) {
+            e.stopPropagation();
+            searchinputhandle.toggleClass("stretch");
+        });
+
+        jQuery('.paging a').addClass('paging-button com-btn');
+        var inputVal = jQuery('.search-input').val();
+        inputVal = jQuery.trim(inputVal).length;
+        if (inputVal !== 0) {
+            jQuery('.life-search input.searchbox-submit').css('z-index', '800');
+            //$('.searchbox-icon').css('display','none');
+        } else {
+            jQuery('.search-input').val('');
+            jQuery('.life-search input.searchbox-submit').css('z-index', '');
+            //$('.searchbox-icon').css('display','block');
+        }
+
+    });
+
+    function buttonUp() {
+        var inputVal = jQuery('.life-search .search-input').val();
+        //alert(inputVal);
+        inputVal = jQuery.trim(inputVal).length;
+        if (inputVal !== 0) {
+            jQuery('.life-search input.searchbox-submit').css('z-index', '800');
+            jQuery('.searchbtn').css('display', 'none');
+        } else {
+            jQuery('.life-search .search-input').val('');
+            jQuery('.life-search input.searchbox-submit').css('z-index', '');
+            jQuery('.searchbtn').css('display', 'block');
+        }
+    }
+
+    jQuery(document).ready(function () {
+        jQuery(".top-btn").click(function () {
+            jQuery(".maintopnav").slideToggle();
+        });
+        jQuery(".menuIcon").click(function () {
+            jQuery(".menuIcon").toggleClass("active");
+        });
+        jQuery(document.body).click(function () {
+            jQuery(".searchbtn").removeClass("stretch");
+            jQuery(".profile-menu").removeClass("profile-slide");
+            //alert("hello");
+        });
+        jQuery(".mobile-profile .user-profile").click(function (e) {
+            e.stopPropagation();
+            jQuery(".profile-menu").toggleClass("profile-slide");
+        });
+        jQuery(document).ready(function () {
+            jQuery('.fb-share').click(function (e) {
+                e.preventDefault();
+                window.open(jQuery(this).attr('href'), 'fbShareWindow', 'height=450, width=550, top=' + (jQuery(window).height() / 2 - 275) + ', left=' + (jQuery(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+                return false;
+            });
+        });
+
+    });
+
+    jQuery(document).ready(function () {
+        jQuery(".topnav").accordion({
+            accordion: false,
+            speed: 500,
+            closedSign: '+',
+            openedSign: '-'
+        });
+    });
+    jQuery(window).bind("pageshow", function () {
+        jQuery('.life-search input.searchbox-submit').css('z-index', '');
+    });
+
+
+    (function ($) {
+        $.fn.NewWaterfall = function (options) {
+
+            var defaults = {
+                width: 360,
+                delay: 60,
+                repeatShow: false
+            };
+            var config = $.extend({}, defaults, options);
+            var ul = this;
+
+            var show = function (li) {
+                if ($(window).scrollTop() + $(window).height() > $(li).offset().top) {
+                    $(li).addClass('show');
+                }
+                else if ($(window).scrollTop() + $(window).height() < $(li).offset().top) {
+                    if (config.repeatShow) {
+                        $(li).removeClass('show');
+                    }
+                }
+            }
+            var refresh = function () {
+                if (ul.length <= 0) {
+                    return;
+                }
+
+                ul.css({
+                    "position": "relative"
+                });
+
+
+                var lis = $(ul).children("li");
+
+                if (lis.length <= 0) {
+                    return;
+                }
+
+                var ul_width = $(ul).width();
+                var ul_column = parseInt(ul_width / config.width);
+
+                if (lis.length < ul_column) {
+                    ul_column = lis.length;
+                }
+
+                var li_left = (ul_width - ul_column * config.width) / 2;
+
+                if (ul_column > 0) {
+
+                    lis.css({
+                        "position": "absolute",
+                        "width": config.width
+                    });
+
+
+                    var maxHeight = 0;
+                    var list = []
+                    var nlist = []
+
+
+                    for (var i = 0; i < lis.length; i++) {
+                        list.push({
+                            "index": i,
+                            "bottom": 0,
+                            "height": $(lis[i]).height(),
+                        });
+                    }
+
+
+                    for (var i = 0; i < ul_column; i++) {
+                        nlist.push([]);
+                    }
+
+
+                    for (var i = 0; i < lis.length; i++) {
+                        if (i < ul_column) {
+                            list[i]["bottom"] = list[i]["height"];
+                            nlist[i].push(list[i]);
+                        }
+                        else {
+                            var b = 0;
+                            var l = 0;
+                            for (var j = 0; j < ul_column; j++) {
+                                var jh = nlist[j][nlist[j].length - 1]["bottom"] + list[i]["height"];
+                                if (b == 0 || jh < b) {
+                                    b = jh;
+                                    l = j;
+                                }
+                            }
+                            list[i]["bottom"] = b;
+                            nlist[l].push(list[i]);
+                        }
+                    }
+
+
+                    for (var i = 0; i < nlist.length; i++) {
+                        for (var j = 0; j < nlist[i].length; j++) {
+                            $(lis[nlist[i][j]["index"]]).css({
+                                "left": i * config.width + li_left,
+                                "top": nlist[i][j]["bottom"] - nlist[i][j]["height"]
+                            });
+                        }
+                    }
+
+
+                    for (var i = 0; i < nlist.length; i++) {
+                        var h = nlist[i][nlist[i].length - 1]["bottom"];
+                        if (maxHeight < h) {
+                            maxHeight = h;
+                        }
+                    }
+                    $(ul).css("height", maxHeight);
+                }
+                else {
+                    lis.attr("style", "");
+                    ul.attr("style", "");
+                }
+
+
+                for (var i = 0; i < lis.length; i++) {
+                    show(lis[i]);
+                }
+            }
+
+
+            refresh();
+            setInterval(refresh, config.delay);
+        }
+    })(jQuery);
+</script>
+<script>
+    $(function() {
+        generate();
+        $("#button").bind("click", function() {
+            generate();
+        });
+    });
+
+    var quotes = ["We are all in the gutter, but some of us are looking at the stars.@Lady Windermere's fan", "The truth is rarely pure and never simple.@The Importance of Being Earnest", "Experience is merely the name men gave to their mistakes.@The Picture of Dorian Gray", "I am so clever that sometimes I don't understand a single word of what I am saying.@The Happy Prince and Other Stories", "Yes: I am a dreamer. For a dreamer is one who can only find his way by moonlight, and his punishment is that he sees the dawn before the rest of the world.@The Critic as Artist", "Women are meant to be loved, not to be understood.@Lord Arthur Savile's Crime and Other Stories", "The very essence of romance is uncertainty.@The Importance of Being Earnest", "If you want to tell people the truth, make them laugh, otherwise they'll kill you.@The Nightingale and Rose", "I don't want to be at the mercy of my emotions. I want to use them, to enjoy them, and to dominate them.@The Picture of Dorian Gray", "All women become like their mothers. That is their tragedy. No man does, and that is his.@The Importance of Being Earnest", "It is absurd to divide people into good and bad. People are either charming or tedious.@Lady Windermere's Fan", "The only way to get rid of temptation is to yield to it.@The Picture of Dorian Gray", "To love oneself is the beginning of a lifelong romance.@An Ideal Husband", "Nowadays people know the price of everything and the value of nothing.@The Picture of Dorian Gray", "There is only one thing in the world worse than being talked about, and that is not being talked about.@The Picture of Dorian Gray", "Life is far too important a thing ever to talk seriously about.@Lady Windermere's Fan","Yes: I am a dreamer. For a dreamer is one who can only find his way by moonlight, and his punishment is that he sees the dawn before the rest of the world.@The Critic as Artist", "There is only one thing in the world worse than being talked about, and that is not being talked about.@The Picture of Dorian Gray", "When one is in love, one always begins by deceiving one's self, and one always ends by deceiving others. That is what the world calls a romance.@The Picture of Dorian Gray", "I like men who have a future and women who have a past@The Picture of Dorian Gray"];
+
+    function generate() {
+        var num = Math.round(Math.random() * (quotes.length - 1));
+
+        var arr = quotes[num].split("@");
+        var quote = arr[0];
+        var work = arr[1];
+        $("#quote").animate({
+            left: "250px",
+            opacity: 0
+        }, "slow", "easeInOutCubic", function(){
+            $("#quote").animate({
+                left: 0,
+                opacity: 1
+            },"slow").html(quote);
+        });
+
+        $("#work").animate({
+            left: "250px",
+            opacity: 0
+        }, "slow", function(){
+            $("#work").animate({
+                left: 0,
+                opacity: 1
+            },"slow").html("From " + work);
+        });
+
+        tweet();
+    }
+
+    function tweet() {
+        var txt = $("#quote").html()  + " " + $("#work").html();
+        var link = "https://twitter.com/intent/tweet?button_hashtag=QuotesOfWilde" + "&text=" + txt;
+        $("#twitter").attr("href", link);
+    }
+</script>
+<script>
+    var TxtType = function(el, toRotate, period) {
+        this.toRotate = toRotate;
+        this.el = el;
+        this.loopNum = 0;
+        this.period = parseInt(period, 10) || 2000;
+        this.txt = '';
+        this.tick();
+        this.isDeleting = false;
+    };
+
+    TxtType.prototype.tick = function() {
+        var i = this.loopNum % this.toRotate.length;
+        var fullTxt = this.toRotate[i];
+
+        if (this.isDeleting) {
+            this.txt = fullTxt.substring(0, this.txt.length - 1);
+        } else {
+            this.txt = fullTxt.substring(0, this.txt.length + 1);
+        }
+
+        this.el.innerHTML = '<span class="wrap">'+this.txt+'</span>';
+
+        var that = this;
+        var delta = 200 - Math.random() * 100;
+
+        if (this.isDeleting) { delta /= 2; }
+
+        if (!this.isDeleting && this.txt === fullTxt) {
+            delta = this.period;
+            this.isDeleting = true;
+        } else if (this.isDeleting && this.txt === '') {
+            this.isDeleting = false;
+            this.loopNum++;
+            delta = 500;
+        }
+
+        setTimeout(function() {
+            that.tick();
+        }, delta);
+    };
+
+    window.onload = function() {
+        var elements = document.getElementsByClassName('typewrite');
+        for (var i=0; i<elements.length; i++) {
+            var toRotate = elements[i].getAttribute('data-type');
+            var period = elements[i].getAttribute('data-period');
+            if (toRotate) {
+                new TxtType(elements[i], JSON.parse(toRotate), period);
+            }
+        }
+        // INJECT CSS
+        var css = document.createElement("style");
+        css.type = "text/css";
+        css.innerHTML = ".typewrite > .wrap { border-right: 0.08em solid #fff}";
+        document.body.appendChild(css);
+    };
+</script>
+
+</body>
+</html>
